@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Location Scanner - By Chaitanya</title>
+  <style>
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #ff6a00, #ee0979, #00d2ff, #3a1c71);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.75);
+      padding: 40px 30px;
+      border-radius: 20px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 0 30px rgba(0,0,0,0.9);
+      position: relative;
+    }
+    h1 {
+      margin-bottom: 18px;
+      font-weight: 700;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+    }
+    input, select {
+      padding: 12px 15px;
+      font-size: 17px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      width: 100%;
+      margin-bottom: 20px;
+      background: #222;
+      color: #eee;
+      box-shadow: inset 0 0 8px rgba(255,255,255,0.3);
+    }
+    input:focus, select:focus {
+      box-shadow: 0 0 12px #ff6a00;
+    }
+    button {
+      background: #ff6a00;
+      border: none;
+      color: white;
+      padding: 15px 0;
+      font-size: 18px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255,106,0,0.8);
+      transition: 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background: #ee0979;
+      box-shadow: 0 6px 20px rgba(238,9,121,0.9);
+    }
+    button:disabled {
+      cursor: not-allowed;
+      background: #555;
+      box-shadow: none;
+    }
+    .message {
+      margin-top: 30px;
+      font-size: 22px;
+      min-height: 100px;
+      font-weight: 600;
+      line-height: 1.3;
+      white-space: pre-line;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .message.show {
+      opacity: 1;
+    }
+    .spinner {
+      margin: 20px auto 0;
+      border: 6px solid #eee;
+      border-top: 6px solid #ff6a00;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+    .spinner.active {
+      display: block;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Start Location Scan</h1>
+    <input id="nameInput" type="text" placeholder="Enter your name" />
+    <select id="planetSelect">
+      <option value="" disabled selected>Select your planet</option>
+      <option value="Earth">Earth</option>
+      <option value="Mars">Mars</option>
+      <option value="Venus">Venus</option>
+      <option value="Jupiter">Jupiter</option>
+      <option value="Saturn">Saturn</option>
+      <option value="Neptune">Neptune</option>
+      <option value="Pluto">Pluto</option>
+      <option value="Other">Other</option>
+    </select>
+    <select id="continentSelect">
+      <option value="" disabled selected>Choose your continent</option>
+      <option value="Asia">Asia</option>
+      <option value="Europe">Europe</option>
+      <option value="Africa">Africa</option>
+      <option value="North America">North America</option>
+      <option value="South America">South America</option>
+      <option value="Australia">Australia</option>
+      <option value="Antarctica">Antarctica</option>
+    </select>
+    <select id="galaxySelect">
+      <option value="" disabled selected>Choose your galaxy</option>
+      <option value="Milky Way">Milky Way</option>
+      <option value="Andromeda">Andromeda</option>
+      <option value="Sombrero">Sombrero</option>
+      <option value="Whirlpool">Whirlpool</option>
+      <option value="Other">Other</option>
+    </select>
+    <button id="startBtn">Start Scan</button>
+    <div class="spinner" id="spinner"></div>
+    <div class="message" id="messageArea"></div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('startBtn');
+    const nameInput = document.getElementById('nameInput');
+    const planetSelect = document.getElementById('planetSelect');
+    const continentSelect = document.getElementById('continentSelect');
+    const galaxySelect = document.getElementById('galaxySelect');
+    const messageArea = document.getElementById('messageArea');
+    const spinner = document.getElementById('spinner');
+
+    const scanningSteps = [
+      "Establishing neural uplink...",
+      "Pinging planetary signals...",
+      "Accessing Galactic Database...",
+      "Decrypting dimensional coordinates...",
+      "Matching DNA strands...",
+      "Fetching your aura signature...",
+      "Synchronizing space-time data...",
+      "Checking interplanetary passport...",
+      "Analyzing brainwave patterns...",
+      "Decoding name metadata...",
+      "Verifying presence in Milky Way...",
+      "Contacting Earth ground station...",
+      "Scanning local ISP signals...",
+      "Access granted to Chaitanya's Scanner...",
+      "Geo-spatial triangulation started...",
+      "Zooming into continent...",
+      "Satellite locked on your location...",
+      "Reconstructing street view...",
+      "Isolating your last Wi-Fi connection...",
+      "Compiling encrypted address data...",
+      "Checking if you're lying...",
+      "Checking if you're human...",
+      "Reconfirming all signals...",
+      "Finalizing location...",
+      "Warning: Suspicious activity detected...",
+      "Location override in progress...",
+      "Final answer generated!",
+      "You are at..."
+    ];
+
+    const locationResults = [
+      "🛰️ Location detected: India 🇮🇳",
+      "👽 You're not from this world... Mars maybe?",
+      "🌍 You are somewhere deep in Earth...",
+      "🧠 We found you in your thoughts...",
+      "📡 Hiding in your neighbor’s Wi-Fi!",
+      "🔭 Detected in the Orion Sector!",
+      "🎯 Location ping: Right behind you 😱",
+      "🕳️ Location unknown. Possibly... a wormhole?"
+    ];
+
+    const closingLines = [
+      "Mission accomplished ✅",
+      "No actual data was collected. Or was it?",
+      "This scan was for fun. But spooky, right?",
+      "Scanner shutting down... 👋",
+      "Made by Chaitanya. Respect the dev 👽"
+    ];
+
+    function showMessage(msg, delay) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          messageArea.classList.remove('show');
+          setTimeout(() => {
+            messageArea.textContent = msg;
+            messageArea.classList.add('show');
+            resolve();
+          }, 500);
+        }, delay);
+      });
+    }
+
+    btn.addEventListener('click', async () => {
+      const name = nameInput.value.trim();
+      const planet = planetSelect.value;
+      const continent = continentSelect.value;
+      const galaxy = galaxySelect.value;
+
+      if (!name || !planet || !continent || !galaxy) {
+        alert("Fill all the details to continue the scan.");
+        return;
+      }
+
+      nameInput.disabled = true;
+      planetSelect.disabled = true;
+      continentSelect.disabled = true;
+      galaxySelect.disabled = true;
+      btn.disabled = true;
+      spinner.classList.add('active');
+
+      for (let i = 0; i < scanningSteps.length; i++) {
+        await showMessage(scanningSteps[i], 1200);
+      }
+
+      spinner.classList.remove('active');
+
+      // Random location result plus user's input references to personalize
+      const randLocIndex = Math.floor(Math.random() * locationResults.length);
+      const resultMsg = `${locationResults[randLocIndex]}\n\nName: ${name}\nPlanet: ${planet}\nContinent: ${continent}\nGalaxy: ${galaxy}`;
+
+      await showMessage(resultMsg, 1000);
+
+      await showMessage(closingLines[Math.floor(Math.random() * closingLines.length)], 3000);
+
+      // Re-enable inputs and button after scan
+      nameInput.disabled = false;
+      planetSelect.disabled = false;
+      continentSelect.disabled = false;
+      galaxySelect.disabled = false;
+      btn.disabled = false;
+    });
+  </script>
+</body>
+</html>
